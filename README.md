@@ -1,6 +1,6 @@
 # Kaco Pool
 
-This project is based on Hardhat.
+This project is based on Pancake
 
 
 # Advanced Sample Hardhat Project
