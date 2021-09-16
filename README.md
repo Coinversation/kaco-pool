@@ -24,14 +24,15 @@ npx solhint 'contracts/**/*.sol'
 npx solhint 'contracts/**/*.sol' --fix
 ```
 
-# Etherscan verification
+# Deploy
 
 ```shell
-hardhat run --network ropsten scripts/deploy.js
+npx hardhat run --network testnet scripts/deploy.js
 ```
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
+# Test Address
+factory deployed to: 0x0892EaFeB0F7a10265f2e6648a4FA7c0FFd23353
+chef address(stake Kaco earn ACN):  0x7F075c63219Ee34cd92037b1e2e4F71f8eca1C78
+Kaco Token: 0x0ba819e30016cf682c7795b44859148c65e62292
+ACN Token deployed to: 0xe59a37949d7879403a0cC0DC9f5BB7EAa3EAdbD1

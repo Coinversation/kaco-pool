@@ -3,7 +3,7 @@ const hre = require("hardhat");
 
 async function main() {
     await hre.run("verify:verify", {
-        address: "0x6ED0a0870BD8861B73DfCf939A529dEAA0f5664b",
+        address: "0x7F075c63219Ee34cd92037b1e2e4F71f8eca1C78",
         contract: "contracts/SmartChefInitializable.sol:SmartChefInitializable"
     });
     console.log("chef verified.")
