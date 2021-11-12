@@ -6,50 +6,62 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 
+const kaco_bsc_address = "0xf96429A7aE52dA7d07E60BE95A3ece8B042016fB";
+const usdt_bsc_address = "0x55d398326f99059fF775485246999027B3197955";
+
+const official_account = "0xFB83a67784F110dC658B19515308A7a95c2bA33A";
+
+const factory_bsc_address = "0xaD26791c470f7e4d0d52383F8814A0A7198B6310";
+
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  // const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
+  // const factory = await SmartChefFactory.deploy();
+  // await factory.deployed();
+  // console.log("factory deployed to:", factory.address);
 
-  const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
-  const factory = await SmartChefFactory.deploy();
-  await factory.deployed();
-  console.log("factory deployed to:", factory.address);
+  // await sleep(30000);
 
-  await hre.run("verify:verify", {
-    address: factory.address
-  });
-  console.log("factory verified.")
+  // await hre.run("verify:verify", {
+  //   address: factory.address
+  // });
+  // console.log("factory verified.")
 
-  const ERC20PresetFixedSupply = await ethers.getContractFactory("ERC20PresetFixedSupply");
-  const erc20 = await ERC20PresetFixedSupply.deploy("ACoin", "ACN", "10000000000000000000000000", "0xFB83a67784F110dC658B19515308A7a95c2bA33A");
-  await erc20.deployed();
-  console.log("erc20 deployed to:", erc20.address);
+  // const ERC20PresetFixedSupply = await ethers.getContractFactory("ERC20PresetFixedSupply");
+  // const erc20 = await ERC20PresetFixedSupply.deploy("ACoin", "ACN", "10000000000000000000000000", "0xFB83a67784F110dC658B19515308A7a95c2bA33A");
+  // await erc20.deployed();
+  // console.log("erc20 deployed to:", erc20.address);
 
-  await hre.run("verify:verify", {
-    address: erc20.address,
-    constructorArguments: ["ACoin", "ACN", "10000000000000000000000000", "0xFB83a67784F110dC658B19515308A7a95c2bA33A"],
-  });
-  console.log("erc20 verified.")
+  // await hre.run("verify:verify", {
+  //   address: erc20.address,
+  //   constructorArguments: ["ACoin", "ACN", "10000000000000000000000000", "0xFB83a67784F110dC658B19515308A7a95c2bA33A"],
+  // });
+  // console.log("erc20 verified.")
 
-  await factory.deployPool("0x0ba819e30016cf682c7795b44859148c65e62292", erc20.address,
-    1, 12403859, 13403859, 0, "0xFB83a67784F110dC658B19515308A7a95c2bA33A");
-  console.log("chef deployed")
+  // const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
+  // const factory = SmartChefFactory.attach(factory_bsc_address);
+  const startBlock = 12607100;
+
+  // await factory.deployPool(kaco_bsc_address, usdt_bsc_address,
+  //   "231481481481480000", startBlock, 13039100, 0, official_account);
+  // console.log("chef deployed")
 
   const salt = ethers.utils.solidityKeccak256(["address", "address", "uint256"],
-    ["0x0ba819e30016cf682c7795b44859148c65e62292", erc20.address, 12403859]);
+    [kaco_bsc_address, usdt_bsc_address, startBlock]);
   const chef = await ethers.getContractFactory("SmartChefInitializable");
-  const chefAddress = ethers.utils.getCreate2Address(factory.address, salt, ethers.utils.keccak256(chef.bytecode));
+  const chefAddress = ethers.utils.getCreate2Address(factory_bsc_address, salt, ethers.utils.keccak256(chef.bytecode));
   console.log("chef address: ", chefAddress)
+
+  await sleep(30000);
 
   await hre.run("verify:verify", {
     address: chefAddress,
     contract: "contracts/SmartChefInitializable.sol:SmartChefInitializable"
   });
   console.log("chef verified.")
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // We recommend this pattern to be able to use async/await everywhere
