@@ -8,6 +8,7 @@ const ethers = hre.ethers;
 
 const kaco_bsc_address = "0xf96429A7aE52dA7d07E60BE95A3ece8B042016fB";
 const usdt_bsc_address = "0x55d398326f99059fF775485246999027B3197955";
+const dot_bsc_address = "0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402";
 
 const official_account = "0xFB83a67784F110dC658B19515308A7a95c2bA33A";
 
@@ -20,7 +21,6 @@ async function main() {
   // console.log("factory deployed to:", factory.address);
 
   // await sleep(30000);
-
   // await hre.run("verify:verify", {
   //   address: factory.address
   // });
@@ -37,16 +37,19 @@ async function main() {
   // });
   // console.log("erc20 verified.")
 
-  // const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
-  // const factory = SmartChefFactory.attach(factory_bsc_address);
-  const startBlock = 12607100;
+  const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
+  const factory = SmartChefFactory.attach(factory_bsc_address);
 
-  // await factory.deployPool(kaco_bsc_address, usdt_bsc_address,
-  //   "231481481481480000", startBlock, 13039100, 0, official_account);
+  const startBlock = 12692200;
+  const endBlock = startBlock + 432000;
+  const rewardPerBlock = "493055555555550";
+  const rewardToken = dot_bsc_address;
+  // await factory.deployPool(kaco_bsc_address, rewardToken,
+  //   rewardPerBlock, startBlock, endBlock, 0, official_account);
   // console.log("chef deployed")
 
   const salt = ethers.utils.solidityKeccak256(["address", "address", "uint256"],
-    [kaco_bsc_address, usdt_bsc_address, startBlock]);
+    [kaco_bsc_address, rewardToken, startBlock]);
   const chef = await ethers.getContractFactory("SmartChefInitializable");
   const chefAddress = ethers.utils.getCreate2Address(factory_bsc_address, salt, ethers.utils.keccak256(chef.bytecode));
   console.log("chef address: ", chefAddress)
