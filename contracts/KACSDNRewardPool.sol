@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -7,15 +7,10 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./SafeBEP20.sol";
 import "./IROUTER.sol";
 
-contract SmartChefInitializableV2 is Ownable, ReentrancyGuard {
+//KAC-SDN kacoLP manual extending reward pool
+contract KACSDNRewardPool is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
-
-    // The address of the smart chef factory
-    address public SMART_CHEF_FACTORY;
-
-    // Whether it is initialized
-    bool public isInitialized;
 
     // Accrued token per share
     uint256 public accTokenPerShare;
@@ -56,10 +51,6 @@ contract SmartChefInitializableV2 is Ownable, ReentrancyGuard {
     event RewardsStop(uint256 blockNumber);
     event Withdraw(address indexed user, uint256 amount);
 
-    constructor() {
-        SMART_CHEF_FACTORY = msg.sender;
-    }
-
     /*
      * @notice Initialize the contract
      * @param _stakedToken: staked token address
@@ -67,24 +58,24 @@ contract SmartChefInitializableV2 is Ownable, ReentrancyGuard {
      * @param _startBlock: start block
      * @param _admin: admin address with ownership
      */
-    function initialize(
+    constructor(
         IBEP20 _stakedToken,
         IBEP20 _rewardToken,
         uint256 _startBlock,
         address _admin
-    ) external {
-        require(!isInitialized, "Already initialized");
-        require(msg.sender == SMART_CHEF_FACTORY, "Not factory");
-
-        // Make this contract initialized
-        isInitialized = true;
+    )  {
+        require(_stakedToken != _rewardToken, "Tokens must be be different");
 
         stakedToken = _stakedToken;
         rewardToken = _rewardToken;
         bonusEndBlock = _startBlock;
 
         //default: [WSDN, KAC]
-        paths = [0x0f933Dc137D21cA519ae4C7E93f87a4C8EF365Ef, 0xb12c13e66AdE1F72f71834f2FC5082Db8C091358];
+        address kacAddress = 0xb12c13e66AdE1F72f71834f2FC5082Db8C091358;
+        paths = [0x0f933Dc137D21cA519ae4C7E93f87a4C8EF365Ef, kacAddress];
+        //approve kac, todo verify if external call is allowed in constructor.
+        IBEP20(kacAddress).safeIncreaseAllowance(address(ROUTER),type(uint).max);
+
 
         uint256 decimalsRewardToken = uint256(rewardToken.decimals());
         require(decimalsRewardToken < 30, "Must be inferior to 30");
