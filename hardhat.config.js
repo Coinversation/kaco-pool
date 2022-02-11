@@ -4,7 +4,7 @@ require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
-
+require("@nomiclabs/hardhat-solpp");
 
 const { mnemonic, BSCSCANAPIKEY} = require('../secret.json');
 
@@ -71,5 +71,8 @@ module.exports = {
   },
   mocha: {
     timeout: 20000
+  },
+  solpp: {
+    noFlatten: false
   }
 };
