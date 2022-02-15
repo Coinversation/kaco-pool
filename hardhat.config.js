@@ -43,13 +43,13 @@ module.exports = {
     //   accounts:
     //     process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     // },
-    testnet: {
+    bscTestnet: {
       url: "https://data-seed-prebsc-2-s3.binance.org:8545/",
       chainId: 97,
       gasPrice: 5000000000,
       accounts: {mnemonic: mnemonic}
     },
-    mainnet: {
+    bscMainnet: {
       url: "https://bsc-dataseed1.ninicoin.io/",
       chainId: 56,
       gasPrice: 5000000000,

@@ -6,14 +6,15 @@ const kacoSDNlp_shiden_address = "0x456C0082DE0048EE883881fF61341177FA1FEF40";
 
 const official_account = "0xFB83a67784F110dC658B19515308A7a95c2bA33A";
 
-// SmartChefFactoryV2 deploy to: 0x634996Eaafba398734a595F1A083630BDa5df577
-// SmartChefInitializableV2 deploy to: 0xffe8a2d1b7c69d69bd93880cA55b0e8222bE789a
 
 async function main() {
-  const SmartChefFactory = await ethers.getContractFactory("SmartChefFactoryV2");
-  const factory = await SmartChefFactory.deploy();
-  await factory.deployed();
-  console.log("factory deployed to:", factory.address);
+  const startBlock = 1200200;
+  const rewardToken = kacoSDNlp_shiden_address;
+
+  const KACSDNRewardPool = await ethers.getContractFactory("KACSDNRewardPool");
+  const pool = await KACSDNRewardPool.deploy(kaco_shiden_address, kacoSDNlp_shiden_address, startBlock, official_account);
+  await pool.deployed();
+  console.log("factory deployed to:", pool.address);
 
 //   await sleep(30000);
 //   await hre.run("verify:verify", {
@@ -35,16 +36,16 @@ async function main() {
 //   const SmartChefFactory = await ethers.getContractFactory("SmartChefFactory");
 //   const factory = SmartChefFactory.attach(factory_bsc_address);
 
-  const startBlock = 12692200;
-  const rewardToken = kacoSDNlp_shiden_address;
-  await factory.deployPool(kaco_shiden_address, rewardToken,
-    startBlock, official_account);
-  console.log("chef deployed")
-  const salt = ethers.utils.solidityKeccak256(["address", "address", "uint256"],
-    [kaco_shiden_address, rewardToken, startBlock]);
-  const chef = await ethers.getContractFactory("SmartChefInitializableV2");
-  const chefAddress = ethers.utils.getCreate2Address(factory.address, salt, ethers.utils.keccak256(chef.bytecode));
-  console.log("chef address: ", chefAddress)
+  // const startBlock = 12692200;
+  // const rewardToken = kacoSDNlp_shiden_address;
+  // await factory.deployPool(kaco_shiden_address, rewardToken,
+  //   startBlock, official_account);
+  // console.log("chef deployed")
+  // const salt = ethers.utils.solidityKeccak256(["address", "address", "uint256"],
+  //   [kaco_shiden_address, rewardToken, startBlock]);
+  // const chef = await ethers.getContractFactory("SmartChefInitializableV2");
+  // const chefAddress = ethers.utils.getCreate2Address(factory.address, salt, ethers.utils.keccak256(chef.bytecode));
+  // console.log("chef address: ", chefAddress)
 
 //   await sleep(30000);
 
